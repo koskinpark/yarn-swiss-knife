@@ -10,7 +10,7 @@ YARN_CACHE=
 endif
 
 
-front = docker run --rm  -it -v $(shell pwd):/work $(YARN_CACHE) $(IMAGE_FRONT) ${1}
+front = docker run --rm  -it -v $(shell pwd):/app $(YARN_CACHE) $(IMAGE_FRONT) ${1}
 
 all: | run_once
 

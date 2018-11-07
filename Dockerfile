@@ -1,17 +1,18 @@
-FROM mhart/alpine-node:8.2.1
+FROM node:11-alpine
 
+WORKDIR /app
 
-RUN apk add --no-cache make g++ python git
-
-WORKDIR /vendor
-
+COPY package.json .yarnrc yarn.lock ./
 COPY docker-entrypoint.sh /usr/local/bin/
 
-ADD https://raw.githubusercontent.com/skilld-labs/zen/8.x-7.x/STARTERKIT/package.json /vendor
+RUN apk add --no-cache make gcc g++ python git
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-  && cd /vendor \
-  && yarn install --ignore-scripts
+  && cd /app \
+  && yarn install --ignore-optional \
+  && apk del --no-cache --purge make gcc g++ python \
+  && rm -rf node_modules
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["yarn", "run", "gulp"]
+
+CMD ["yarn", "run", "build"]

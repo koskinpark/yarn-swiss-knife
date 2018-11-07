@@ -1,12 +1,12 @@
 #!/bin/sh
-cd /work/
+cd /app/project
 
-# Simple copy until https://github.com/yarnpkg/yarn/issues/3724 will resolved
-# later in install should be added: `--modules-folder /vendor/node_modules`
+mkdir -p npm-packages-offline-cache
+cp -RT /app/npm-packages-offline-cache/ ./npm-packages-offline-cache/
 
-if [ ! -d /work/node_modules ]; then
-  cp -r /vendor/node_modules /work/node_modules
-fi
+# first offline load basic packages.
+yarn install --ignore-optional --offline
 
-yarn install --check-files --non-interactive --cache-folder /root/.yarn-cache
+# if new were added
+yarn check || yarn install --ignore-optional --check-files
 exec "$@"
